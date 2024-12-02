@@ -116,4 +116,5 @@ router.delete("/products", async function (req, res) {
     }
 });
 
+export { Product, mongoKey };
 export default router;
