@@ -1,0 +1,23 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.product-c {
+    display: flex;
+    background-color: gray;
+    padding: 15px;
+}
+.indiv-prod {
+    padding: 0;
+    border: 1px solid red;
+    width: 120px;
+    text-align: center;
+    margin: 10px;
+}
+a {
+    color: blue;
+    cursor: pointer;
+}
