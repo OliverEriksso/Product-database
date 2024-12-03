@@ -19,4 +19,6 @@ async function start() {
     }
 }
 
-start();
+//start();
+
+export { mongoKey };
