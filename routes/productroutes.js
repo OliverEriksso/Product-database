@@ -1,25 +1,7 @@
-import express from "express";
-import mongoose from "mongoose";
+import { Router } from "express";
+import Product from "../models/productmodel.js";
 
-import dotenv from "dotenv";
-dotenv.config();
-const mongoKey = process.env.MONGO_URI;
-
-mongoose.connect(mongoKey)
-    .then(() => console.log("connected to MongoDB"))
-    .catch(err => console.error("Failed to conect to MongoDB", err));
-
-const productSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    description: { type: String, required: true },
-    price: { type: Number, required: true },
-    quantity: { type: Number, required: true },
-    category: { type: String, required: true },
-});
-
-const router = express.Router();
-
-const Product = mongoose.model("Product", productSchema)
+const router = new Router();
 
 
 router.get("/products", async function (req, res) {
@@ -36,9 +18,9 @@ router.get("/products/:id", async function (req, res) {
     try {
         const product = await Product.findById(req.params.id);
         if (product) {
-            res.json(product);
+            res.status(2002).json(product);
         } else {
-            res.status(404).send("Not found!");
+            res.status(404).send("Not found");
         }
     }
     catch (error) {
@@ -116,5 +98,4 @@ router.delete("/products", async function (req, res) {
     }
 });
 
-export { Product, mongoKey };
 export default router;

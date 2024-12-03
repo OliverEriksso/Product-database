@@ -1,17 +1,22 @@
-import express from "express";
-import http from "http";
-import router from "./routes.js";
- 
-const server = express();
+import mongoose from "mongoose";
+import app from "./app.js";
 
-server.use(express.json()); //order here matters, you have to use it in JSON first before anything else or it wont work
-server.use("/api", router);
-server.use(express.static("public"));
+const PORT = 3000;
 
-const httpServer = http.createServer(server); //we need to combo http & express so we can shut it down during testing easier
+import dotenv from "dotenv";
+dotenv.config();
+const mongoKey = process.env.MONGO_URI;
 
-httpServer.listen(3000, function() {
-    console.log("Server started on https://localhost:3000");
-});
+async function start() {
+    try {
+        await mongoose.connect(mongoKey);
+        app.listen(PORT, function() {
+        console.log("Server started on https://localhost:3000", " & connected to mongodb");
+        }); 
+    } catch (error) {
+        console.error(error);
+        process.exit(1);
+    }
+}
 
-export default httpServer;
+start();

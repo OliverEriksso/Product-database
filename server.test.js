@@ -1,10 +1,6 @@
 import request from "supertest";
-
-import httpServer from "./server.js";
-
 import mongoose from "mongoose";
-
-import { Product, mongoKey } from "./routes.js";
+import { Product, mongoKey } from "./productroutes.js";
 
 describe("API tests", function() {
     beforeAll(async function() { //before everything, connect to mongoose
