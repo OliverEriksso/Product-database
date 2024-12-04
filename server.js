@@ -5,7 +5,9 @@ const PORT = 3000;
 
 import dotenv from "dotenv";
 dotenv.config();
-const mongoKey = process.env.MONGO_URI;
+export const mongoKey =  process.env.NODE_ENV === "test" 
+    ? process.env.TEST_MONGO_URI
+    : process.env.MONGO_URI;
 
 async function start() {
     try {
@@ -19,6 +21,4 @@ async function start() {
     }
 }
 
-//start();
-
-export { mongoKey };
+start();

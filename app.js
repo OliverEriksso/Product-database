@@ -1,10 +1,13 @@
 import express from "express";
 import router from "./routes/productroutes.js";
+import http from "http";
 
-const app = express();
+const server = express();
 
-app.use(express.json()); //order here matters, you have to use it in JSON first before anything else or it wont work
-app.use("/api", router);
-app.use(express.static("public"));
+server.use(express.json()); //order here matters, you have to use it in JSON first before anything else or it wont work
+server.use("/api", router);
+server.use(express.static("public"));
+
+const app = http.createServer(server); //we combine express & http so we can use http .close() in test.js
 
 export default app;
