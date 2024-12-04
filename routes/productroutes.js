@@ -30,8 +30,6 @@ router.get("/products/:id", async function (req, res) {
 
 router.get("/product", async function (req, res) {
     const { name } = req.query; 
-    console.log("name:", name);
-
     try {
         const products = await Product.find();
 

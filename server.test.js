@@ -26,7 +26,7 @@ describe("API tests", function() {
                     "category": "default category",
                 },
                 { 	
-                    "name": "default name3",
+                    "name": "default name kw",
                     "description": "default desc3",
                     "price": 3,
                     "quantity": 3,
@@ -51,7 +51,7 @@ describe("API tests", function() {
             await mongoose.connection.close(); 
             app.close();
         } catch (error) {
-            console.error("Error closing the MongoDB connection:", error);
+            console.error("Error closing the DB/Server", error);
         }
     });
     test("GET /api/products should return an array of products", async function() {
@@ -70,9 +70,12 @@ describe("API tests", function() {
         expect(responseTwo.body.name).toBe("default name");
         expect(Array.isArray(responseTwo.body)).toBe(false); 
     });
-    // test("GET /api/products/?name=.. should return search query", async function() { //not done
-    //     const response = await request(httpServer).get("/api/products?name=ps");
-    // })
+    test("GET /api/products/?name=.. should return search query", async function() {
+        const response = await request(app).get("/api/product?name=kw");
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveLength(1);
+        expect(response.body[0].name).toMatch("kw");
+    });
     test("POST /api/products should post a new product", async function() { 
         const newProduct = { name: "heyhey", description: "hey3", price: 666, quantity: 99, category: "heyhey", };
         const response = await request(app).post("/api/products").send(newProduct);
@@ -82,7 +85,16 @@ describe("API tests", function() {
         const verifyProduct = await request(app).get(`/api/products/${id}`)
         expect(verifyProduct.status).toBe(200);
         expect(verifyProduct.body.name).toBe(newProduct.name);
-    })
+    });
+    test("PUT /api/products/:id should update existing product", async function() {
+        let getTestProduct = await Product.findOne({ "name": "default name" });
+        expect(getTestProduct.name).toBe("default name");
+        getTestProduct.name = "Testing put";
+        await getTestProduct.save();
+        
+        const updatedProduct = await Product.findById(getTestProduct._id);
+        expect(updatedProduct.name).toBe("Testing put");    
+    });
     test("DELETE /api/products/:id should delete a product based off ID", async function() {
         const getTestProd = await Product.findOne({ "name": "default name2" });
         expect(getTestProd.name).toBe("default name2");
@@ -93,12 +105,12 @@ describe("API tests", function() {
 
         const deleteConfirm = await request(app).get(`/api/products/${productId}`);
         expect(deleteConfirm.status).toBe(404);
-    })
+    });
     test("DELETE /api/products should delete all products", async function() {
         const deleteProds = await request(app).delete("/api/products");
         expect(deleteProds.status).toBe(200);
 
         const deleteConfirm = await Product.find({});
         expect(deleteConfirm.length).toBe(0);
-    })
+    });
 })
