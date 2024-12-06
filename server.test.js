@@ -1,7 +1,7 @@
 import request from "supertest";
 import mongoose from "mongoose";
 
-import { mongoKey } from "./server.js";
+import mongoKey from "./config.js"
 import app from "./app.js";
 import Product from "./models/productmodel.js";
 
@@ -49,7 +49,6 @@ describe("API tests", function() {
     afterAll(async () => {
         try {
             await mongoose.connection.close(); 
-            app.close();
         } catch (error) {
             console.error("Error closing the DB/Server", error);
         }
@@ -87,13 +86,14 @@ describe("API tests", function() {
         expect(verifyProduct.body.name).toBe(newProduct.name);
     });
     test("PUT /api/products/:id should update existing product", async function() {
-        let getTestProduct = await Product.findOne({ "name": "default name" });
-        expect(getTestProduct.name).toBe("default name");
-        getTestProduct.name = "Testing put";
-        await getTestProduct.save();
-        
-        const updatedProduct = await Product.findById(getTestProduct._id);
-        expect(updatedProduct.name).toBe("Testing put");    
+        const testProduct = await Product.findOne({ name: "default name" });
+        const updateData = { name: "Testing" };
+
+        const response = await request(app).put(`/api/products/${testProduct._id}`).send(updateData);
+        expect(response.status).toBe(200);
+
+        const responseTwo = await request(app).get(`/api/products/${testProduct._id}`);
+        expect(responseTwo.body.name).toBe("Testing");
     });
     test("DELETE /api/products/:id should delete a product based off ID", async function() {
         const getTestProd = await Product.findOne({ "name": "default name2" });

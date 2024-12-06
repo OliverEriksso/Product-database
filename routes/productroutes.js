@@ -60,9 +60,9 @@ router.post("/products", async function (req, res) {
 
 router.put("/products/:id", async function (req, res) {
     try {
-        const product = await Product.findByIdAndUpdate(req.params.id, req.body);
+        const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (product) {
-            res.json(product);
+            res.status(200).json(product);
         } else {
             res.status(404).send("Product not found")
         }
